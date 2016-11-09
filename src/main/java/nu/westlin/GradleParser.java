@@ -111,7 +111,11 @@ public class GradleParser {
 
         if (line.contains(" group:")) {
             // compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
-            dependency = Optional.empty();
+            String[] strings = line.split(":");
+            String group = strings[1].split(",")[0].trim().replaceAll("\"", "").replaceAll("'", "");
+            String name = strings[2].split(",")[0].trim().replaceAll("\"", "").replaceAll("'", "");
+            String version = strings[3].trim().replaceAll("\"", "").replaceAll("'", "");
+            dependency = Optional.of(new Dependency(group, name, version));
         } else {
             // compile "javax.inject:javax.inject:1"
             String[] strings = line.split(" ");
