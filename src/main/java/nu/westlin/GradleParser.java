@@ -5,6 +5,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class GradleParser {
+
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GradleParser() {
         // Do nothing
@@ -42,10 +46,10 @@ public class GradleParser {
                         Optional<Dependency> dependency = createDependency(line.trim());
                         dependency.ifPresent(dependencies::add);
                         if (!dependency.isPresent()) {
-                            System.out.println("Skipping line: " + line);
+                            logger.debug("Skipping line: " + line);
                         }
                     } else {
-                        System.out.println("Skipping line: " + line);
+                        logger.debug("Skipping line: " + line);
                     }
                 }
             } else if (line.startsWith("dependencies {")) {
@@ -61,7 +65,7 @@ public class GradleParser {
     }
 
     private void checkForNewerVersion(Dependency dependency) {
-        System.out.println("Kollar efter ny version för " + dependency);
+        logger.debug("Kollar efter ny version för " + dependency);
 
         try {
             // http://mvnrepository.com/artifact/javax.inject/javax.inject
@@ -74,9 +78,9 @@ public class GradleParser {
                 int versionIdx = cols.size() == 4 ? 0 : 1;
                 String newestVersion = cols.get(versionIdx).text();
                 if (!dependency.version.equals(newestVersion)) {
-                    System.out.println("Ny version finns: " + newestVersion);
+                    logger.info("Ny version finns: " + newestVersion);
                 }
-                System.out.println("Current version: " + dependency.version + ", Newest version: " + newestVersion + "\n");
+                logger.info("Current version: " + dependency.version + ", Newest version: " + newestVersion + "\n");
             }
 
         } catch (IOException e) {
@@ -103,14 +107,20 @@ public class GradleParser {
     }
 
     protected Optional<Dependency> createDependency(String line) {
-        //System.out.println("line = " + line);
-        // compile "javax.inject:javax.inject:1"
-        // compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
-        String[] strings = line.split(" ");
-        String str = strings[1].replaceAll("\"", "");
-        str = str.replaceAll("'", "");
-        String[] split = str.split(":");
+        Optional<Dependency> dependency;
 
-        return split.length == 3 ? Optional.of(new Dependency(split[0], split[1], split[2])) : Optional.empty();
+        if (line.contains(" group:")) {
+            // compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+            dependency = Optional.empty();
+        } else {
+            // compile "javax.inject:javax.inject:1"
+            String[] strings = line.split(" ");
+            String str = strings[1].replaceAll("\"", "");
+            str = str.replaceAll("'", "");
+            String[] split = str.split(":");
+            dependency = split.length == 3 ? Optional.of(new Dependency(split[0], split[1], split[2])) : Optional.empty();
+        }
+
+        return dependency;
     }
 }
