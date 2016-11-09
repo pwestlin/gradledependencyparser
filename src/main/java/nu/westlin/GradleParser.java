@@ -14,8 +14,21 @@ import java.util.Optional;
 
 public class GradleParser {
 
+    public GradleParser() {
+        // Do nothing
+    }
+
     public static void main(String[] args) throws Exception {
-        String filename = "/home/petves/gdsfastighet/habanero/build.gradle";
+        if (args.length != 1) {
+            System.out.println("Usage: java " + GradleParser.class.getName() + " filename");
+            System.exit(1);
+        }
+
+        new GradleParser().parse(args[0]);
+    }
+
+    private void parse(String filename) throws IOException {
+        //String filename = "/home/petves/gdsfastighet/habanero/build.gradle";
         List<String> lines = Files.readAllLines(Paths.get(filename));
         List<Dependency> dependencies = Lists.newArrayList();
 
@@ -23,13 +36,12 @@ public class GradleParser {
         for (String line : lines) {
             if (dependencyMode) {
                 if (line.startsWith("}")) {
-                    dependencyMode = false;
                     break;
                 } else {
                     if (isOk(line)) {
                         Optional<Dependency> dependency = createDependency(line.trim());
                         dependency.ifPresent(dependencies::add);
-                        if(!dependency.isPresent()) {
+                        if (!dependency.isPresent()) {
                             System.out.println("Skipping line: " + line);
                         }
                     } else {
@@ -41,14 +53,14 @@ public class GradleParser {
             }
         }
 
-        dependencies.forEach(GradleParser::checkForNewerVersion);
+        dependencies.forEach(this::checkForNewerVersion);
     }
 
-    private static boolean isOk(String line) {
+    private boolean isOk(String line) {
         return !line.isEmpty() && !line.contains("se.lantmateriet");
     }
 
-    private static void checkForNewerVersion(Dependency dependency) {
+    private void checkForNewerVersion(Dependency dependency) {
         System.out.println("Kollar efter ny version för " + dependency);
 
         try {
@@ -72,7 +84,7 @@ public class GradleParser {
         }
     }
 
-    private static Optional<Element> getFirstCentralRow(Element table) {
+    protected Optional<Element> getFirstCentralRow(Element table) {
         // Mar, 2007
         Elements rows = table.select("tr");
         Optional<Element> centralRow = Optional.empty();
@@ -90,7 +102,7 @@ public class GradleParser {
         return centralRow;
     }
 
-    private static Optional<Dependency> createDependency(String line) {
+    protected Optional<Dependency> createDependency(String line) {
         //System.out.println("line = " + line);
         // compile "javax.inject:javax.inject:1"
         // compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
