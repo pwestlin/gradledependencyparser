@@ -1,4 +1,4 @@
-package nu.westlin;
+package nu.westlin.gradledependencyparser;
 
 import org.jsoup.nodes.Element;
 

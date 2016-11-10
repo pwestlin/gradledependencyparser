@@ -1,10 +1,10 @@
-package nu.westlin;
+package nu.westlin.gradledependencyparser;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DependencyTest {
 
@@ -21,7 +21,7 @@ public class DependencyTest {
         Dependency dependency1 = new Dependency("group", "name", "version");
         Dependency dependency2 = new Dependency("group2", "name", "version");
 
-        assertThat(dependency1, is(not(dependency2)));
+        assertThat(dependency1, is(CoreMatchers.not(dependency2)));
     }
 
     @Test
@@ -29,7 +29,7 @@ public class DependencyTest {
         Dependency dependency1 = new Dependency("group", "name", "version");
         Dependency dependency2 = new Dependency("group", "name2", "version");
 
-        assertThat(dependency1, is(not(dependency2)));
+        assertThat(dependency1, is(CoreMatchers.not(dependency2)));
     }
 
     @Test
@@ -37,6 +37,6 @@ public class DependencyTest {
         Dependency dependency1 = new Dependency("group", "name", "version");
         Dependency dependency2 = new Dependency("group", "name", "version2");
 
-        assertThat(dependency1, is(not(dependency2)));
+        assertThat(dependency1, is(CoreMatchers.not(dependency2)));
     }
 }

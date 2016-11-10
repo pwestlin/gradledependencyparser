@@ -25,6 +25,12 @@ dependencies {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'nu.westlin.gradledependencyparser.Parser'
+    }
+}
+
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }

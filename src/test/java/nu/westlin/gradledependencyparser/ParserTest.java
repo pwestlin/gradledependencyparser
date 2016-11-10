@@ -1,4 +1,4 @@
-package nu.westlin;
+package nu.westlin.gradledependencyparser;
 
 import org.junit.Test;
 
@@ -7,9 +7,9 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class GradleParserTest {
+public class ParserTest {
 
-    final GradleParser parser = new GradleParser();
+    final Parser parser = new Parser();
 
     @Test
     public void createDependency_doubleQuotesWithoutGroup() {

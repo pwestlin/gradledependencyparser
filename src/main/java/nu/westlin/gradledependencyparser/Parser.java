@@ -1,4 +1,4 @@
-package nu.westlin;
+package nu.westlin.gradledependencyparser;
 
 import com.google.common.collect.Lists;
 import org.jsoup.Jsoup;
@@ -14,21 +14,21 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-public class GradleParser {
+public class Parser {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public GradleParser() {
+    public Parser() {
         // Do nothing
     }
 
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
-            System.out.println("Usage: java " + GradleParser.class.getName() + " filename");
+            System.out.println("Usage: java " + Parser.class.getName() + " filename");
             System.exit(1);
         }
 
-        new GradleParser().parse(args[0]);
+        new Parser().parse(args[0]);
     }
 
     private void parse(String filename) throws IOException {
