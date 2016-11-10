@@ -19,5 +19,5 @@ What you need to build and run this application:
 `java -jar build/libs/gradledependencyparser-all.jar path/to/your/build.gradle`
 
 ## TODO ##
-* Use `cols.size() - x` instead of `if(cols.size == 4)...`.
 * Use latest when rows are not sorted by date at mvnrepository.com (see http://mvnrepository.com/artifact/ch.qos.logback/logback-access). 
+* Print execution report like "Dependencies with new versions" and "Skipped dependencies".

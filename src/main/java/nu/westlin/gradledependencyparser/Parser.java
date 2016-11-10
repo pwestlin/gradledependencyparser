@@ -65,18 +65,17 @@ public class Parser {
     }
 
     private void checkForNewerVersion(Dependency dependency) {
-        logger.debug("Kollar efter ny version för " + dependency);
+        logger.debug("Searching for new version for " + dependency);
 
         try {
-            // http://mvnrepository.com/artifact/javax.inject/javax.inject
             String url = "http://mvnrepository.com/artifact/" + dependency.group + "/" + dependency.name;
             Document doc = Jsoup.connect(url).get();
             Element table = doc.select("table").last();
             Optional<Element> firstCentralRow = getFirstCentralRow(table);
             if (firstCentralRow.isPresent()) {
                 Elements cols = firstCentralRow.get().select("td");
-                // TODO petves: Use "cols.size() - x" instead
-                int versionIdx = cols.size() == 4 ? 0 : 1;
+                //int versionIdx = cols.size() == 4 ? 0 : 1;
+                int versionIdx = cols.size() - 4;
                 String newestVersion = cols.get(versionIdx).text();
                 if (!dependency.version.equals(newestVersion)) {
                     logger.info("Ny version finns: " + newestVersion);
@@ -97,8 +96,8 @@ public class Parser {
         //rows.stream().sorted(DATE_COMPARATOR).collect(Collectors.toList());
         for (Element row : rows) {
             Elements cols = row.select("td");
-            // TODO petves: Use "cols.size() - x" instead
-            int repoIdx = cols.size() == 4 ? 1 : 2;
+            //int repoIdx = cols.size() == 4 ? 1 : 2;
+            int repoIdx = cols.size() - 3;
             if (!cols.isEmpty() && cols.get(repoIdx).text().equals("Central")) {
                 centralRow = Optional.of(row);
                 break;
