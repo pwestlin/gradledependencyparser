@@ -75,6 +75,7 @@ public class GradleParser {
             Optional<Element> firstCentralRow = getFirstCentralRow(table);
             if (firstCentralRow.isPresent()) {
                 Elements cols = firstCentralRow.get().select("td");
+                // TODO petves: Use "cols.size() - x" instead
                 int versionIdx = cols.size() == 4 ? 0 : 1;
                 String newestVersion = cols.get(versionIdx).text();
                 if (!dependency.version.equals(newestVersion)) {
@@ -96,6 +97,7 @@ public class GradleParser {
         //rows.stream().sorted(DATE_COMPARATOR).collect(Collectors.toList());
         for (Element row : rows) {
             Elements cols = row.select("td");
+            // TODO petves: Use "cols.size() - x" instead
             int repoIdx = cols.size() == 4 ? 1 : 2;
             if (!cols.isEmpty() && cols.get(repoIdx).text().equals("Central")) {
                 centralRow = Optional.of(row);
