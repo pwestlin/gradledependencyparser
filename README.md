@@ -1,6 +1,9 @@
 # Gradle Dependency Parser #
 
-This little application scans a Gradle build file ()build.gradle) for dependencies and checks for new version at [mvnrepository.com](http://mvnrepository.com/).
+This little handy console application scans a Gradle build file ()build.gradle) for dependencies and checks for new versions at [mvnrepository.com](http://mvnrepository.com/).
+
+**Disclaimer**
+This application is written by me for me. If it doesn't work for you or don't suit your pruposes, please feel free to rewrite it yourself. :) 
 
 ## System requirements ##
 
