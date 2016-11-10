@@ -11,12 +11,17 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class Parser {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMM, yyyy", Locale.US);
 
     public Parser() {
         // Do nothing
@@ -71,10 +76,9 @@ public class Parser {
             String url = "http://mvnrepository.com/artifact/" + dependency.group + "/" + dependency.name;
             Document doc = Jsoup.connect(url).get();
             Element table = doc.select("table").last();
-            Optional<Element> firstCentralRow = getFirstCentralRow(table);
+            Optional<Element> firstCentralRow = getNewestCentralRow(table);
             if (firstCentralRow.isPresent()) {
                 Elements cols = firstCentralRow.get().select("td");
-                //int versionIdx = cols.size() == 4 ? 0 : 1;
                 int versionIdx = cols.size() - 4;
                 String newestVersion = cols.get(versionIdx).text();
                 if (!dependency.version.equals(newestVersion)) {
@@ -88,19 +92,28 @@ public class Parser {
         }
     }
 
-    protected Optional<Element> getFirstCentralRow(Element table) {
+    protected Optional<Element> getNewestCentralRow(Element table) {
         // Mar, 2007
         Elements rows = table.select("tr");
         Optional<Element> centralRow = Optional.empty();
 
         //rows.stream().sorted(DATE_COMPARATOR).collect(Collectors.toList());
+        Date lastDate = null;
         for (Element row : rows) {
             Elements cols = row.select("td");
-            //int repoIdx = cols.size() == 4 ? 1 : 2;
-            int repoIdx = cols.size() - 3;
-            if (!cols.isEmpty() && cols.get(repoIdx).text().equals("Central")) {
-                centralRow = Optional.of(row);
-                break;
+            if (!cols.isEmpty() && cols.get(cols.size() - 3).text().equals("Central")) {
+                Date rowDate = null;
+                try {
+                    rowDate = DATE_FORMATTER.parse(cols.get(cols.size() - 1).text().replaceAll("\\(", "").replaceAll("\\)", ""));
+                    if (lastDate == null || lastDate.before(rowDate)) {
+                        centralRow = Optional.of(row);
+                        lastDate = rowDate;
+                    } else {
+                        break;
+                    }
+                } catch (ParseException e) {
+                    throw new RuntimeException("Could not parse date", e);
+                }
             }
         }
 

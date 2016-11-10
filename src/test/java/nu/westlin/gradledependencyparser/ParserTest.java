@@ -42,4 +42,5 @@ public class ParserTest {
 
         assertThat(dependency, is(Optional.of(new Dependency("org.apache.httpcomponents", "httpclient", "4.5.2"))));
     }
+
 }
