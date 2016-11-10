@@ -13,11 +13,11 @@ What you need to build and run this application:
 * [Gradle 3](https://https://gradle.org/gradle-download/)
 
 ## Build it ##
-`gradle build`
+`gradle fatJar`
 
 ## Run it ##
-`java -jar build/libs/GradleDependencyParser.jar path/to/your/build.gradle`
+`java -jar build/libs/gradledependencyparser-all.jar path/to/your/build.gradle`
 
 ## TODO ##
 * Use `cols.size() - x` instead of `if(cols.size == 4)...`.
-* Make an executable jar with libs.
+* Use latest when rows are not sorted by date at mvnrepository.com (see http://mvnrepository.com/artifact/ch.qos.logback/logback-access). 
